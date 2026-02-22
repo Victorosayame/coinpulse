@@ -1,4 +1,4 @@
-"use server"
+import "server-only"
 //a function that makes us easily make every endpoint call
 
 import qs from "query-string";
@@ -15,7 +15,7 @@ export async function fetcher<T>(
   revalidate = 60,
 ): Promise<T> {
   const url = qs.stringifyUrl({
-    url: `${BASE_URL}/${endpoint}`,
+    url: `${BASE_URL}/${endpoint.replace(/^\//, "")}`,
     query: params,
   }, { skipEmptyString: true, skipNull: true });
 
