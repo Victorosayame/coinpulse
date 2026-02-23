@@ -1,4 +1,4 @@
-import "server-only"
+"use server"
 //a function that makes us easily make every endpoint call
 
 import qs from "query-string";
