@@ -1,39 +1,58 @@
 //this functionality is for only paid plan on coingecko
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react";
 
-const WS_BASE = `${process.env.NEXT_PUBLIC_COINGECKO_WEBSOCKET_URL}?x_cg_pro_api_key=${process.env.NEXT_PUBLIC_COINGECKO_API_KEY}`
+const WS_BASE = `${process.env.NEXT_PUBLIC_COINGECKO_WEBSOCKET_URL}?x_cg_pro_api_key=${process.env.NEXT_PUBLIC_COINGECKO_API_KEY}`;
 
-export const useCoinGeckoWebSocket = ({ coinId, poolId, liveInterval }: UseCoinGeckoWebSocketProps): UseCoinGeckoWebSocketReturn => {
+export const useCoinGeckoWebSocket = ({
+  coinId,
+  poolId,
+  liveInterval,
+}: UseCoinGeckoWebSocketProps): UseCoinGeckoWebSocketReturn => {
   const wsRef = useRef<WebSocket | null>(null);
-  const subscribed = useRef(<Set<String>>(new Set()));
+  const subscribed = useRef(<Set<String>>new Set());
 
   const [price, setPrice] = useState<ExtendedPriceData | null>(null);
-  const [trades, setTrades] = useState<Trade[]>([])
-  const [ohlcv, setOhlcv] = useState<OHLCData | null>(null)
+  const [trades, setTrades] = useState<Trade[]>([]);
+  const [ohlcv, setOhlcv] = useState<OHLCData | null>(null);
 
-  const [isWsReady, setIsWsReady] = useState(false)
+  const [isWsReady, setIsWsReady] = useState(false);
 
   useEffect(() => {
     const ws = new WebSocket(WS_BASE);
     wsRef.current = ws;
 
-    const send = (payload: Record<string, unknown>) => ws.send(JSON.stringify(payload));
+    const send = (payload: Record<string, unknown>) =>
+      ws.send(JSON.stringify(payload));
 
     const handleMesage = (event: MessageEvent) => {
-      const msg: WebSocketMessage = JSON.parse(event.data);
-
-      if(msg.type === "ping") {
-        send({ type: "pong" });
-        return
+      // const msg: WebSocketMessage = JSON.parse(event.data);
+      let msg: WebSocketMessage;
+      try {
+        msg = JSON.parse(event.data);
+      } catch {
+        console.error("Failed to parse WebSocket message:", event.data);
+        return;
       }
-      if(msg.type === "confirm_subscription") {
-        const { channel } = JSON.parse(msg?.identifier ?? "");
+
+      if (msg.type === "ping") {
+        send({ type: "pong" });
+        return;
+      }
+      if (msg.type === "confirm_subscription") {
+        // const { channel } = JSON.parse(msg?.identifier ?? "");
+        let channel: string;
+        try {
+          ({ channel } = JSON.parse(msg?.identifier ?? "{}"));
+        } catch {
+          return;
+        }
+        if (!channel) return;
 
         subscribed.current.add(channel);
       }
-      if(msg.c === "C1") {
+      if (msg.c === "C1") {
         setPrice({
           usd: msg.p ?? 0,
           coin: msg.i,
@@ -42,9 +61,9 @@ export const useCoinGeckoWebSocket = ({ coinId, poolId, liveInterval }: UseCoinG
           marketCap: msg.m,
           volume24h: msg.v,
           timestamp: msg.t,
-        })
+        });
       }
-      if(msg.c === "G2") {
+      if (msg.c === "G2") {
         const newTrade: Trade = {
           price: msg.pu,
           value: msg.vo,
@@ -55,7 +74,7 @@ export const useCoinGeckoWebSocket = ({ coinId, poolId, liveInterval }: UseCoinG
 
         setTrades((prev) => [newTrade, ...prev].slice(0, 7));
       }
-      if(msg.ch === "G3") {
+      if (msg.ch === "G3") {
         const timestamp = msg.t ?? 0;
 
         const candle: OHLCData = [
@@ -66,7 +85,7 @@ export const useCoinGeckoWebSocket = ({ coinId, poolId, liveInterval }: UseCoinG
           Number(msg.c ?? 0),
         ];
 
-        setOhlcv(candle)
+        setOhlcv(candle);
       }
     };
 
@@ -74,40 +93,48 @@ export const useCoinGeckoWebSocket = ({ coinId, poolId, liveInterval }: UseCoinG
 
     ws.onmessage = handleMesage;
 
-    ws.onclose = () => setIsWsReady(false)
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    ws.onclose = () => setIsWsReady(false);
 
     return () => ws.close();
-
-  }, [])
+  }, []);
 
   useEffect(() => {
-    if(!isWsReady) return;
+    if (!isWsReady) return;
 
     const ws = wsRef.current;
-    if(!ws) return;
+    if (!ws) return;
 
-    const send = (payload: Record<string, unknown>) => ws.send(JSON.stringify(payload));
+    const send = (payload: Record<string, unknown>) =>
+      ws.send(JSON.stringify(payload));
 
     const unsubscribeAll = () => {
       subscribed.current.forEach((channel) => {
         send({
           command: "unsubscribe",
-          identifier: JSON.stringify({channel}),
-        })
-      })
+          identifier: JSON.stringify({ channel }),
+        });
+      });
 
       subscribed.current.clear();
     };
 
     const subscribe = (channel: string, data?: Record<string, unknown>) => {
-      if(subscribed.current.has(channel)) return;
+      if (subscribed.current.has(channel)) return;
 
-      send({ coomand: "subscribe", identifier: JSON.stringify({ channel }) });
+      send({ command: "subscribe", identifier: JSON.stringify({ channel }) });
 
-      if(data) {
-        send({ command: "message", identifier: JSON.stringify({ channel }), data: JSON.stringify(data), })
+      if (data) {
+        send({
+          command: "message",
+          identifier: JSON.stringify({ channel }),
+          data: JSON.stringify(data),
+        });
       }
-    } 
+    };
 
     queueMicrotask(() => {
       setPrice(null);
@@ -116,25 +143,28 @@ export const useCoinGeckoWebSocket = ({ coinId, poolId, liveInterval }: UseCoinG
 
       unsubscribeAll();
 
-      subscribe("CGSimplePrice", {coin_id: [coinId], action: "set_tokens"})
+      subscribe("CGSimplePrice", { coin_id: [coinId], action: "set_tokens" });
     });
 
-    const poolAddress = poolId.replace("_", ":");
-    if(poolAddress) {
+    const poolAddress = poolId.replace("_", ":") ?? "";
+    if (poolAddress) {
       subscribe("OnchainTrade", {
         "network_id:pool_addresses": [poolAddress],
         action: "set_pools",
-      })
+      });
 
       subscribe("OnchainOHLCV", {
         "network_id:pool_addresses": [poolAddress],
         interval: liveInterval,
         action: "set_pools",
-      })
+      });
     }
   }, [coinId, poolId, isWsReady, liveInterval]);
 
   return {
-    price, trades, ohlcv, isConnected: isWsReady,
-  }
-}
+    price,
+    trades,
+    ohlcv,
+    isConnected: isWsReady,
+  };
+};

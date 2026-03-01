@@ -39,7 +39,7 @@ export default function TopGainersLosersClient({
     },
     {
       header: "24h Change",
-      cellClassName: "name-cell",
+      cellClassName: "change-cell",
       cell: (coin: TopGainersLosersResponse) => {
         const isUp = coin.usd_24h_change > 0;
         return (

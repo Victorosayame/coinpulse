@@ -93,7 +93,7 @@ const CoinDetails = async ({ params }: NextPageProps) => {
 
                 {link ? (
                   <div className="link">
-                    <Link href={link} target="_blank">
+                    <Link href={link} target="_blank" rel="noopener noreferrer">
                       {linkText || label}
                     </Link>
                     <ArrowUpRight size={16} />

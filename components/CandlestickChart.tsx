@@ -120,7 +120,7 @@ const CandlestickChart = ({ children, data, coinId, height = 360, initialPeriod 
       chartRef.current?.timeScale().fitContent();
       prevOhlcDataLength.current = ohlcData.length;
     }
-  }, [ohlcData, period, liveOhlcv])
+  }, [ohlcData, period, liveOhlcv, mode])
   return (
     <div id="candlestick-chart">
       <div className="chart-header">

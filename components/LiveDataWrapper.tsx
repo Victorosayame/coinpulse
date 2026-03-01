@@ -68,11 +68,11 @@ const LiveDataWrapper = ({ children, coinId, poolId, coin, coinOHLCData }: LiveD
 
       <Separator className="divider" />
 
-      {tradeColumns && (
+      {trades.length > 0 && (
         <div className="trades">
           <h4>Recent Trades</h4>
 
-          <DataTable columns={tradeColumns} data={trades} rowKey={(_, index) => index} tableClassName="trades-table" />
+          <DataTable columns={tradeColumns} data={trades} rowKey={(trades) => `${trade.timestamp}-${trade.price}-${trade.type}`} tableClassName="trades-table" />
         </div>
       )}
     </section>
