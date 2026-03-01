@@ -11,10 +11,10 @@ interface CandlestickChartProps {
   coinId: string;
   height?: number;
   children?: React.ReactNode;
-  mode?: 'historical' | 'live';
+  mode?: "historical" | "live";
   initialPeriod?: Period;
-  liveInterval: '1s' | '1m';
-  setLiveInterval: (interval: '1s' | '1m') => void;
+  liveInterval: "1s" | "1m";
+  setLiveInterval: (interval: "1s" | "1m") => void;
 }
 
 interface ConverterProps {
@@ -36,7 +36,14 @@ interface Ticker {
   trade_url: string;
 }
 
-type Period = 'daily' | 'weekly' | 'monthly' | '3months' | '6months' | 'yearly' | 'max';
+type Period =
+  | "daily"
+  | "weekly"
+  | "monthly"
+  | "3months"
+  | "6months"
+  | "yearly"
+  | "max";
 
 interface CoinMarketData {
   id: string;
@@ -110,7 +117,7 @@ interface ChartSectionProps {
   coinId: string;
 }
 
-interface TopGainersLosers {
+export interface TopGainersLosers {
   id: string;
   name: string;
   symbol: string;
@@ -119,7 +126,7 @@ interface TopGainersLosers {
   priceChangePercentage24h: number;
 }
 
-interface TopGainersLosersResponse {
+export interface TopGainersLosersResponse {
   id: string;
   name: string;
   symbol: string;
@@ -128,6 +135,11 @@ interface TopGainersLosersResponse {
   usd_24h_change: number;
   usd_24h_vol: number;
   market_cap_rank: number;
+}
+
+export interface TopGainersLosersAPI {
+  top_gainers: TopGainersLosersResponse[];
+  top_losers: TopGainersLosersResponse[];
 }
 
 interface PriceData {
@@ -250,7 +262,7 @@ interface Category {
 interface UseCoinGeckoWebSocketProps {
   coinId: string;
   poolId: string;
-  liveInterval?: '1s' | '1m';
+  liveInterval?: "1s" | "1m";
 }
 
 interface UseCoinGeckoWebSocketReturn {
@@ -279,12 +291,12 @@ interface DataTableProps<T> {
   bodyCellClassName?: string;
 }
 
-type ButtonSize = 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg';
+type ButtonSize = "default" | "sm" | "lg" | "icon" | "icon-sm" | "icon-lg";
 
 type PaginationLinkProps = {
   isActive?: boolean;
   size?: ButtonSize;
-} & React.ComponentProps<'a'>;
+} & React.ComponentProps<"a">;
 
 interface Pagination {
   currentPage: number;
@@ -296,7 +308,7 @@ interface HeaderProps {
   trendingCoins: TrendingCoin[];
 }
 
-type SearchItemCoin = SearchCoin | TrendingCoin['item'];
+type SearchItemCoin = SearchCoin | TrendingCoin["item"];
 
 interface SearchItemProps {
   coin: SearchItemCoin;
