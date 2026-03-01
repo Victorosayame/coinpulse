@@ -1,5 +1,4 @@
-import DataTable from '@/components/DataTable';
-
+import DataTable from "@/components/DataTable";
 
 export const CoinOverviewFallback = () => {
   return (
@@ -21,7 +20,7 @@ export const CoinOverviewFallback = () => {
 export const TrendingCoinsFallback = () => {
   const columns = [
     {
-      header: 'Name',
+      header: "Name",
       cell: () => (
         <div className="name-link">
           <div className="name-image skeleton" />
@@ -30,7 +29,7 @@ export const TrendingCoinsFallback = () => {
       ),
     },
     {
-      header: '24h Change',
+      header: "24h Change",
       cell: () => (
         <div className="price-change">
           <div className="change-icon skeleton" />
@@ -39,7 +38,7 @@ export const TrendingCoinsFallback = () => {
       ),
     },
     {
-      header: 'Price',
+      header: "Price",
       cell: () => <div className="price-line skeleton" />,
     },
   ];
@@ -59,16 +58,65 @@ export const TrendingCoinsFallback = () => {
   );
 };
 
+export const TopGainersLosersFallback = () => {
+  const columns = [
+    {
+      header: "Name",
+      cell: () => (
+        <div className="name-link">
+          <div className="name-image skeleton" />
+          <div className="name-line skeleton" />
+        </div>
+      ),
+    },
+    {
+      header: "Price",
+      cell: () => <div className="price-line skeleton" />,
+    },
+    {
+      header: "24h Change",
+      cell: () => (
+        <div className="price-change">
+          <div className="change-icon skeleton" />
+          <div className="change-line skeleton" />
+        </div>
+      ),
+    },
+    {
+      header: "Volume (24h)",
+      cell: () => <div className="price-line skeleton" />,
+    },
+    {
+      header: "Rank",
+      cell: () => <div className="price-line skeleton" />,
+    },
+  ];
+
+  const dummyData = Array.from({ length: 5 }, (_, i) => ({ id: i }));
+
+  return (
+    <div id="top-gainers-losers-fallback">
+      <h4>Top Gainers / Losers</h4>
+      <DataTable
+        data={dummyData}
+        columns={columns as any}
+        rowKey={(item: any) => item.id}
+        tableClassName="top-gainers-losers-table"
+      />
+    </div>
+  );
+};
+
 export const CategoriesFallback = () => {
   const columns = [
     {
-      header: 'Category',
-      cellClassName: 'category-cell',
+      header: "Category",
+      cellClassName: "category-cell",
       cell: () => <div className="category-line skeleton" />,
     },
     {
-      header: 'Top Gainers',
-      cellClassName: 'top-gainers-cell',
+      header: "Top Gainers",
+      cellClassName: "top-gainers-cell",
       cell: () => (
         <div className="flex gap-1">
           <div className="gainer-image skeleton" />
@@ -78,8 +126,8 @@ export const CategoriesFallback = () => {
       ),
     },
     {
-      header: '24h Change',
-      cellClassName: 'change-header-cell',
+      header: "24h Change",
+      cellClassName: "change-header-cell",
       cell: () => (
         <div className="change-cell">
           <div className="change-icon skeleton" />
@@ -88,13 +136,13 @@ export const CategoriesFallback = () => {
       ),
     },
     {
-      header: 'Market Cap',
-      cellClassName: 'market-cap-cell',
+      header: "Market Cap",
+      cellClassName: "market-cap-cell",
       cell: () => <div className="value-skeleton-lg skeleton" />,
     },
     {
-      header: '24h Volume',
-      cellClassName: 'volume-cell',
+      header: "24h Volume",
+      cellClassName: "volume-cell",
       cell: () => <div className="value-skeleton-md skeleton" />,
     },
   ];
