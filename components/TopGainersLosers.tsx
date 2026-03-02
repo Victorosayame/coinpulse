@@ -1,7 +1,7 @@
 import { fetcher } from "@/lib/coinqecko.actions";
 import { TopGainersLosersFallback } from "./home/Fallback";
 import TopGainersLosersClient from "./TopGainersLosersClient";
-import type { TopGainersLosersAPI } from "@/types";
+// Top-level types are declared globally in `types.d.ts`
 
 const TopGainersLosers = async () => {
   let data: TopGainersLosersAPI;

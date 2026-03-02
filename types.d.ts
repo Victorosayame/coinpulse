@@ -1,5 +1,51 @@
+/**
+ * GLOBAL TYPE DEFINITIONS (types.d.ts)
+ *
+ * This file contains all TypeScript type definitions for the CoinPulse application.
+ * These are global ambient types - available everywhere without imports.
+ *
+ * BUILD PROCESS - STEP 2: Type System Setup
+ *
+ * ORGANIZATION:
+ * 1. Domain Models (OHLCData, Period, Trade, etc.)
+ * 2. Component Props (CandlestickChartProps, LiveDataProps, etc.)
+ * 3. API Response Types (CoinMarketData, CoinDetailsData, etc.)
+ * 4. Utility Types (QueryParams, PoolData, etc.)
+ * 5. WebSocket Types (WebSocketMessage)
+ *
+ * BENEFITS:
+ * - Type-safe across entire application
+ * - No re-imports needed (globally available)
+ * - Single source of truth for all types
+ * - IDE autocomplete and type checking
+ * - Prevents runtime errors from type mismatches
+ *
+ * KEY PRINCIPLES:
+ * - Use interfaces for object shapes
+ * - Use types for unions and primitives
+ * - Make types ambient (no export) for global availability
+ * - Keep related types together
+ * - Document complex types with JSDoc comments
+ */
+
+// ============================================================================
+// DOMAIN MODELS - Core data structures used throughout the app
+// ============================================================================
+
 type OHLCData = [number, number, number, number, number];
 
+/**
+ * NextPageProps - Next.js page component props
+ *
+ * Pattern for async server components receiving route params.
+ * Params are wrapped in Promise for streaming optimization.
+ *
+ * USAGE:
+ * const Page = async ({ params, searchParams }: NextPageProps) => {
+ *   const { id } = await params;
+ *   ...
+ * }
+ */
 interface NextPageProps {
   params: Promise<{ [key: string]: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -36,14 +82,8 @@ interface Ticker {
   trade_url: string;
 }
 
-type Period =
-  | "daily"
-  | "weekly"
-  | "monthly"
-  | "3months"
-  | "6months"
-  | "yearly"
-  | "max";
+type Period = "daily" | "weekly" | "monthly" | "3months" | "6months" | "yearly";
+// | "max";
 
 interface CoinMarketData {
   id: string;
@@ -117,7 +157,7 @@ interface ChartSectionProps {
   coinId: string;
 }
 
-export interface TopGainersLosers {
+interface TopGainersLosers {
   id: string;
   name: string;
   symbol: string;
@@ -126,7 +166,7 @@ export interface TopGainersLosers {
   priceChangePercentage24h: number;
 }
 
-export interface TopGainersLosersResponse {
+interface TopGainersLosersResponse {
   id: string;
   name: string;
   symbol: string;
@@ -137,7 +177,7 @@ export interface TopGainersLosersResponse {
   market_cap_rank: number;
 }
 
-export interface TopGainersLosersAPI {
+interface TopGainersLosersAPI {
   top_gainers: TopGainersLosersResponse[];
   top_losers: TopGainersLosersResponse[];
 }
@@ -279,6 +319,27 @@ interface DataTableColumn<T> {
   cellClassName?: string;
 }
 
+/**
+ * DataTableProps<T> - Generic table configuration
+ *
+ * This is a GENERIC TYPE that works with ANY data type.
+ * <T> is a type parameter replaced with actual data type.
+ *
+ * EXAMPLE USAGE:
+ * DataTableProps<CoinMarketData> - table of coins
+ * DataTableProps<TrendingCoin> - table of trending coins
+ * DataTableProps<Category> - table of categories
+ * DataTableProps<TopGainersLosersResponse> - gainers/losers table
+ *
+ * BENEFITS:
+ * - Single component works with any data structure
+ * - Full type safety for columns and data
+ * - No prop type casting needed
+ * - Reusable across entire app
+ *
+ * BUILD PROCESS - STEP 3: Generic Component System
+ * This pattern is used for DataTable and other reusable components.
+ */
 interface DataTableProps<T> {
   columns: DataTableColumn<T>[];
   data: T[];

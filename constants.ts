@@ -1,34 +1,68 @@
+/**
+ * APPLICATION CONSTANTS (constants.ts)
+ *
+ * Centralized configuration for the entire CoinPulse application.
+ *
+ * BUILD PROCESS - STEP 9: Constants & Configuration
+ *
+ * SECTIONS:
+ * 1. Navigation configuration (navItems)
+ * 2. Chart styling (CHART_COLORS, getCandlestickConfig, getChartConfig)
+ * 3. Period configuration (PERIOD_CONFIG for different time ranges)
+ * 4. UI Constants (PERIOD_BUTTONS, LIVE_INTERVAL_BUTTONS)
+ *
+ * BENEFITS:
+ * - Single source of truth for app-wide values
+ * - Easy to update styling across entire app
+ * - Type-safe configuration with TypeScript
+ * - Reusable factory functions (getCandlestickConfig, getChartConfig)
+ *
+ * USAGE:
+ * import { PERIOD_BUTTONS, getChartConfig } from "@/constants";
+ */
+
 import {
   CandlestickSeriesPartialOptions,
   ChartOptions,
   ColorType,
   DeepPartial,
-} from 'lightweight-charts';
+} from "lightweight-charts";
 
+/**
+ * NAVIGATION CONFIGURATION
+ * Navigation items for the header component
+ */
 export const navItems = [
   {
-    label: 'Home',
-    href: '/',
+    label: "Home",
+    href: "/",
   },
   {
-    label: 'Search',
-    href: '/',
+    label: "Search",
+    href: "/",
   },
   {
-    label: 'All Coins',
-    href: '/coins',
+    label: "All Coins",
+    href: "/coins",
   },
 ];
 
+/**
+ * CHART STYLING CONFIGURATION
+ *
+ * Centralized colors and styling for Lightweight Charts library.
+ * Dark mode colors chosen for crypto trading terminal aesthetic.
+ * All colors as const for immutability.
+ */
 const CHART_COLORS = {
-  background: '#0b1116',
-  text: '#8f9fb1',
-  grid: '#1a2332',
-  border: '#1a2332',
-  crosshairVertical: '#ffffff40',
-  crosshairHorizontal: '#ffffff20',
-  candleUp: '#158A6E',
-  candleDown: '#EB1C36',
+  background: "#0b1116",
+  text: "#8f9fb1",
+  grid: "#1a2332",
+  border: "#1a2332",
+  crosshairVertical: "#ffffff40",
+  crosshairHorizontal: "#ffffff20",
+  candleUp: "#158A6E", // Green for bullish candles
+  candleDown: "#EB1C36", // Red for bearish candles
 } as const;
 
 export const getCandlestickConfig = (): CandlestickSeriesPartialOptions => ({
@@ -87,34 +121,35 @@ export const getChartConfig = (
   },
   localization: {
     priceFormatter: (price: number) =>
-      '$' + price.toLocaleString(undefined, { maximumFractionDigits: 2 }),
+      "$" + price.toLocaleString(undefined, { maximumFractionDigits: 2 }),
   },
 });
 
 export const PERIOD_CONFIG: Record<
   Period,
-  { days: number | string; interval?: 'hourly' | 'daily' }
+  { days: number | string; interval?: "hourly" | "daily" }
 > = {
-  daily: { days: 1, interval: 'hourly' },
-  weekly: { days: 7, interval: 'hourly' },
-  monthly: { days: 30, interval: 'hourly' },
-  '3months': { days: 90, interval: 'daily' },
-  '6months': { days: 180, interval: 'daily' },
+  daily: { days: 1, interval: "hourly" },
+  weekly: { days: 7, interval: "hourly" },
+  monthly: { days: 30, interval: "hourly" },
+  "3months": { days: 90, interval: "daily" },
+  "6months": { days: 180, interval: "daily" },
   yearly: { days: 365 },
-  max: { days: 'max' },
+  //this causes an error on the free mode
+  // max: { days: 'max' },
 };
 
 export const PERIOD_BUTTONS: { value: Period; label: string }[] = [
-  { value: 'daily', label: '1D' },
-  { value: 'weekly', label: '1W' },
-  { value: 'monthly', label: '1M' },
-  { value: '3months', label: '3M' },
-  { value: '6months', label: '6M' },
-  { value: 'yearly', label: '1Y' },
-  { value: 'max', label: 'Max' },
+  { value: "daily", label: "1D" },
+  { value: "weekly", label: "1W" },
+  { value: "monthly", label: "1M" },
+  { value: "3months", label: "3M" },
+  { value: "6months", label: "6M" },
+  { value: "yearly", label: "1Y" },
+  // { value: 'max', label: 'Max' },
 ];
 
-export const LIVE_INTERVAL_BUTTONS: { value: '1s' | '1m'; label: string }[] = [
-  { value: '1s', label: '1s' },
-  { value: '1m', label: '1m' },
+export const LIVE_INTERVAL_BUTTONS: { value: "1s" | "1m"; label: string }[] = [
+  { value: "1s", label: "1s" },
+  { value: "1m", label: "1m" },
 ];

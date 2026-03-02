@@ -1,6 +1,5 @@
 import Converter from "@/components/Converter";
 import LiveDataWrapper from "@/components/LiveDataWrapper";
-import TopGainersLosers from "@/components/TopGainersLosers";
 import { fetcher, getPools } from "@/lib/coinqecko.actions";
 import { formatCurrency } from "@/lib/utils";
 import { ArrowUpRight } from "lucide-react";
@@ -14,7 +13,7 @@ const CoinDetails = async ({ params }: NextPageProps) => {
       dex_pair_format: "contract_address",
     }),
 
-    fetcher<OHLCData>(`coins/${id}/ohlc`, {
+    fetcher<OHLCData[]>(`coins/${id}/ohlc`, {
       vs_currency: "usd",
       days: 1,
       // interval: "hourly",

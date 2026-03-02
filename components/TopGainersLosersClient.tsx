@@ -8,8 +8,6 @@ import { TrendingDown, TrendingUp } from "lucide-react";
 import { Button } from "./ui/button";
 import DataTable from "./DataTable";
 import { cn, formatCurrency, formatPercentage } from "@/lib/utils";
-import type { TopGainersLosersResponse } from "@/types";
-
 interface TopGainersLosersClientProps {
   gainers: TopGainersLosersResponse[];
   losers: TopGainersLosersResponse[];
@@ -21,7 +19,7 @@ export default function TopGainersLosersClient({
 }: TopGainersLosersClientProps) {
   const [active, setActive] = useState<"gainers" | "losers">("gainers");
 
-  const columns = [
+  const columns: DataTableColumn<TopGainersLosersResponse>[] = [
     {
       header: "Name",
       cellClassName: "name-cell",
@@ -98,7 +96,7 @@ export default function TopGainersLosersClient({
       </h4>
       <DataTable
         data={data}
-        columns={columns as any}
+        columns={columns}
         rowKey={(coin) => coin.id}
         tableClassName="top-gainers-losers-table"
         headerCellClassName="py-3!"
